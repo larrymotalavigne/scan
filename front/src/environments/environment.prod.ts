@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  apiUrl: '/api',
+  ollamaApiUrl: 'https://ollama.atomstudios.fr/api'
 };

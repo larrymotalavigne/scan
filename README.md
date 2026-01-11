@@ -1,15 +1,18 @@
 # Scan Viewer
 
-A full-stack manga scan viewer and scraper with automatic GitHub storage integration.
+A full-stack manga scan viewer and scraper with AI-powered search and automatic GitHub storage integration.
 
 ## Features
 
+- **AI-Powered Search**: Search for manga using Ollama AI API integration
+- **Smart Download Manager**: Download manga chapters directly from search results
 - **Automated Scraping**: Scrape manga chapters from supported sites
 - **GitHub Storage**: Automatically save and version scans on GitHub
 - **Modern UI**: Angular-based responsive manga reader
 - **Image Optimization**: Automatic WebP conversion for smaller file sizes
 - **Chapter Management**: Track and organize manga chapters
 - **Direct CDN Access**: Serve content from GitHub's CDN
+- **AI Assistant**: Get personalized manga recommendations
 
 ## Quick Start
 
@@ -32,6 +35,11 @@ GITHUB_BRANCH=main
 3. Run the scraper:
 ```bash
 python main.py
+```
+
+4. (Optional) Run the API server for search & download:
+```bash
+python api_server.py
 ```
 
 ### Frontend Setup
@@ -66,6 +74,7 @@ For detailed setup and usage, see [GITHUB_INTEGRATION.md](GITHUB_INTEGRATION.md)
 scan/
 ├── back/                   # Python backend
 │   ├── main.py            # Main scraper
+│   ├── api_server.py      # FastAPI download server
 │   ├── github_service.py  # GitHub API integration
 │   ├── sync_to_github.py  # Manual sync utility
 │   ├── config.json        # Site configuration
@@ -74,7 +83,11 @@ scan/
 │   └── src/
 │       └── app/
 │           ├── services/  # API services
+│           │   ├── scan.service.ts      # Scan management
+│           │   ├── ollama.service.ts    # AI search API
+│           │   └── download.service.ts  # Download manager
 │           └── pages/     # UI components
+│               └── scan-search.component.ts  # Search interface
 └── assets/                # Scanned manga content
     ├── scans.json         # Manga manifest
     └── [manga]/           # Manga directories
@@ -85,6 +98,7 @@ scan/
 
 ## Documentation
 
+- [Search & Download Guide](SEARCH_AND_DOWNLOAD.md) - AI-powered search and download features
 - [GitHub Integration Guide](GITHUB_INTEGRATION.md) - Complete GitHub setup and usage
 - See `back/config.json` for site scraper configuration
 - Frontend service: `front/src/app/services/scan.service.ts`
@@ -93,10 +107,12 @@ scan/
 
 **Backend:**
 - Python 3.12+
+- FastAPI (REST API framework)
 - httpx (async HTTP client)
 - BeautifulSoup4 (HTML parsing)
 - Pillow (image processing)
 - Pydantic (data validation)
+- Uvicorn (ASGI server)
 
 **Frontend:**
 - Angular 20.x
