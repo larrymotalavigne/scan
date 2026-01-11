@@ -1,10 +1,11 @@
 import asyncio
 import os
 
-from config import config
+from config import config, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH, GITHUB_ENABLED
 from parsers import parse_manga_list_page, parse_manga_page, parse_manga_details, parse_chapter_page
 from update_json import update_root_scans_json, update_manga_scans_json
 from utils import fetch_page, save_images, save_image, extract_chapter_number, clean_chapters
+from github_service import GitHubService
 
 
 async def get_cleaned_images(chapter_dir):
@@ -29,7 +30,7 @@ async def process_chapter(site, manga_dir, chapter_url):
         update_manga_scans_json(site, manga_dir, str(chapter_number), cleaned_images)
 
 
-async def process_manga(site, manga_url, manga_title):
+async def process_manga(site, manga_url, manga_title, github_service=None):
     manga_dir = os.path.join(site.downloads_dir, manga_title)
     if site.ignore_existing_manga and os.path.exists(manga_dir):
         print(f"Skipping manga: {manga_title}, already exists")
@@ -57,17 +58,40 @@ async def process_manga(site, manga_url, manga_title):
         # Update root scans.json after processing all chapters
         update_root_scans_json(site, manga_title, description, author, cover_url)
 
+        # Upload manga files to GitHub if enabled
+        if github_service and os.path.exists(manga_dir):
+            await github_service.upload_manga(manga_dir, manga_title)
+
 
 async def main():
+    # Initialize GitHub service if enabled
+    github_service = None
+    if GITHUB_ENABLED:
+        github_service = GitHubService(
+            token=GITHUB_TOKEN,
+            owner=GITHUB_OWNER,
+            repo=GITHUB_REPO,
+            branch=GITHUB_BRANCH
+        )
+        print(f"✓ GitHub integration enabled - will push to {GITHUB_OWNER}/{GITHUB_REPO}")
+    else:
+        print("⚠ GitHub integration disabled - files will only be saved locally")
+
     for site in config.sites:
         main_page_html = await fetch_page(site.site_url)
         if main_page_html:
             manga_links = parse_manga_list_page(main_page_html, site.selectors)
             for manga_url, manga_title in manga_links:
                 try:
-                    await process_manga(site, manga_url, manga_title)  # Ensure mangas are processed sequentially
-                except:
-                    pass
+                    await process_manga(site, manga_url, manga_title, github_service)  # Ensure mangas are processed sequentially
+                except Exception as e:
+                    print(f"Error processing manga {manga_title}: {e}")
+
+            # Upload root scans.json to GitHub after processing all mangas
+            if github_service:
+                root_json_path = os.path.join(site.downloads_dir, 'scans.json')
+                if os.path.exists(root_json_path):
+                    await github_service.upload_root_json(root_json_path)
 
 
 if __name__ == "__main__":
