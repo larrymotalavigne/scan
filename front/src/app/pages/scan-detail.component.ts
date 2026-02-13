@@ -1,40 +1,45 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScanService } from '../services/scan.service';
 import { CardModule } from 'primeng/card';
 
 @Component({
-  selector: 'app-scan-detail',
-  standalone: true,
-  imports: [CommonModule, CardModule],
-  template: `
-    <div class="container" *ngIf="manga">
-      <div class="detail-section">
-        <div class="cover">
-          <img [src]="manga.cover" alt="{{manga.title}} cover">
-        </div>
-        <div class="details">
-          <h1>{{manga.title}}</h1>
-          <p><strong>Author:</strong> {{manga.author}}</p>
-          <p><strong>Description:</strong> {{manga.description}}</p>
-        </div>
-      </div>
-      <div class="chapters-section" *ngIf="chapters">
-        <h2>Chapters</h2>
-        <div class="chapters-container">
-          <div *ngFor="let chapter of chapters" class="chapter-card" (click)="viewChapter(chapter)">
-            <p-card>
-              <ng-template pTemplate="title">
-                {{chapter.title}}
-              </ng-template>
-            </p-card>
+    selector: 'app-scan-detail',
+    imports: [CardModule],
+    template: `
+    @if (manga) {
+      <div class="container">
+        <div class="detail-section">
+          <div class="cover">
+            <img [src]="manga.cover" alt="{{manga.title}} cover">
+          </div>
+          <div class="details">
+            <h1>{{manga.title}}</h1>
+            <p><strong>Author:</strong> {{manga.author}}</p>
+            <p><strong>Description:</strong> {{manga.description}}</p>
           </div>
         </div>
+        @if (chapters) {
+          <div class="chapters-section">
+            <h2>Chapters</h2>
+            <div class="chapters-container">
+              @for (chapter of chapters; track chapter) {
+                <div class="chapter-card" (click)="viewChapter(chapter)">
+                  <p-card>
+                    <ng-template pTemplate="title">
+                      {{chapter.title}}
+                    </ng-template>
+                  </p-card>
+                </div>
+              }
+            </div>
+          </div>
+        }
       </div>
-    </div>
-  `,
-  styles: [`
+    }
+    `,
+    styles: [`
     .container {
       padding: 20px;
     }

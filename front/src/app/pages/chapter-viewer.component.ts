@@ -1,21 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute } from '@angular/router';
 import { ScanService } from '../services/scan.service';
 
 @Component({
-  selector: 'app-chapter-viewer',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="chapter-viewer" *ngIf="pages">
-      <h1>{{mangaTitle}} - {{chapterTitle}}</h1>
-      <div class="pages">
-        <img *ngFor="let page of pages" [src]="page" alt="Page">
+    selector: 'app-chapter-viewer',
+    imports: [],
+    template: `
+    @if (pages) {
+      <div class="chapter-viewer">
+        <h1>{{mangaTitle}} - {{chapterTitle}}</h1>
+        <div class="pages">
+          @for (page of pages; track page) {
+            <img [src]="page" alt="Page">
+          }
+        </div>
       </div>
-    </div>
-  `,
-  styles: [`
+    }
+    `,
+    styles: [`
     .chapter-viewer {
       padding: 20px;
     }

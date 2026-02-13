@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 import { ScanService } from '../services/scan.service';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, CarouselModule, ButtonModule],
-  template: `
+    selector: 'app-home',
+    imports: [CarouselModule, ButtonModule],
+    template: `
     <div class="home">
       <h1>Available Scans/Manga</h1>
       <p-carousel [value]="scans" numVisible="3" numScroll="3" [responsiveOptions]="responsiveOptions">
@@ -26,7 +25,7 @@ import { ScanService } from '../services/scan.service';
       </p-carousel>
     </div>
   `,
-  styles: [`
+    styles: [`
     .manga-cover {
       width: 100%;
       height: auto;

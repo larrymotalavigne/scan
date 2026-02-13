@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -11,10 +11,9 @@ import { ScanService } from '../services/scan.service';
 import { ThemeService } from '../services/theme.service';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [CommonModule, MenubarModule, InputTextModule, ButtonModule, AutoCompleteModule, FormsModule],
-  template: `
+    selector: 'app-header',
+    imports: [MenubarModule, InputTextModule, ButtonModule, AutoCompleteModule, FormsModule],
+    template: `
     <p-menubar [model]="items">
       <ng-template pTemplate="start">
         <img src="assets/logo.webp" routerLink="/" height="40" alt="logo">
@@ -39,7 +38,7 @@ import { ThemeService } from '../services/theme.service';
       </ng-template>
     </p-menubar>
   `,
-  styles: [`
+    styles: [`
     :host {
       display: block;
     }
